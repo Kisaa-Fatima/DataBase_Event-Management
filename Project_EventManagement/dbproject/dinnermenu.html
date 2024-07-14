@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance Management</title>
+    <style>
+        body {
+            background-image: url('/image.jpg');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .left-container {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .right-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .performance-list {
+            background-color: #33333376;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            margin-top: 20px;
+            padding: 20px;
+        }
+
+        .action-box {
+            width: 250px;
+            height: 250px;
+            border: 2px solid #33333376;
+            background-color: #33333376;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-button {
+            margin-top: 10px;
+            padding: 8px 12px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #3498db;
+            border: none;
+            color: white;
+            border-radius: 5px;
+        }
+
+        .performance-option {
+            margin: 10px;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="left-container">
+        <!-- Performance list section -->
+        <div class="performance-list" id="performanceList">
+            <h2>Menu Items</h2>
+            
+            <script>
+                // Fetch item names from the server
+                fetch('/getprogresstracking/menu')
+                    .then(response => response.json())
+                    .then(data => {
+                        const performanceListContainer = document.getElementById('performanceList');
+                        data.performances.forEach(item => {
+                            const itemNameElement = document.createElement('div');
+                            itemNameElement.className = 'performance-option';
+
+                            const itemNameRadio = document.createElement('input');
+                            itemNameRadio.type = 'radio';
+                            itemNameRadio.name = 'selectedPerformance';
+                            itemNameRadio.value = item.itemname;
+
+                            const itemNameLabel = document.createElement('label');
+                            itemNameLabel.textContent = item.itemname;
+
+                            itemNameElement.appendChild(itemNameRadio);
+                            itemNameElement.appendChild(itemNameLabel);
+                            performanceListContainer.appendChild(itemNameElement);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            </script>
+        </div>
+
+        <!-- New container for "Menu Items Voted" -->
+        <div class="performance-list" id="menuItemsVotedList">
+            <h2>Menu Items Voted</h2>
+
+            <script>
+                // Fetch voting items from the server
+                fetch('/getprogresstracking/voting')
+                    .then(response => response.json())
+                    .then(data => {
+                        const menuItemsVotedListContainer = document.getElementById('menuItemsVotedList');
+                        data.votes.forEach(item => {
+                            const itemNameElement = document.createElement('div');
+                            itemNameElement.className = 'performance-option';
+
+                            const itemNameLabel = document.createElement('label');
+                            itemNameLabel.textContent = `${item.itemname} - Votes: ${item.votes}`;
+
+                            itemNameElement.appendChild(itemNameLabel);
+                            menuItemsVotedListContainer.appendChild(itemNameElement);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            </script>
+        </div>
+    </div>
+
+    <div class="right-container">
+        <!-- Container for Action Boxes -->
+        <!-- First Box: Add to Menu -->
+        <div class="action-box" id="addToMenuBox">
+            <h3>Add to Menu</h3>
+            <button class="action-button" onclick="performAction('addToMenu')">Add</button>
+        </div>
+
+        <!-- Second Box: Reject Item -->
+        <div class="action-box" id="rejectBox">
+            <h3>Reject Item</h3>
+            <button class="action-button" onclick="performAction('reject')">Reject</button>
+        </div>
+
+        <!-- Third Box: Allocate Time Slot and Venue -->
+        <div class="action-box" id="allocateBox">
+            <h3>Add A New Item to Menu</h3>
+
+            <!-- Item Name Input -->
+            <label for="itemName">Item Name:</label>
+            <input type="text" id="itemName" placeholder="Enter item name">
+
+            <!-- Updated the button to handle both existing and new items -->
+            <button class="action-button" onclick="performAction('allocate')">Add Item</button>
+        </div>
+    </div>
+
+    <script>
+        function performAction(action) {
+            const selectedPerformance = document.querySelector('input[name="selectedPerformance"]:checked');
+    
+            if (!selectedPerformance && action !== 'allocate') {
+                alert('Please select a menu item');
+                return;
+            }
+    
+            const itemName = selectedPerformance ? selectedPerformance.value : null;
+    
+            // Retrieve value from input box
+            const itemNameInput = document.getElementById('itemName');
+    
+            switch (action) {
+                case 'addToMenu':
+                    alert(`Item ${itemName} added to FinalMenu!`);
+                    performActionOnItem('addToMenu', itemName);
+                    break;
+                case 'reject':
+                    alert(`Item ${itemName} rejected!`);
+                    performActionOnItem('reject', itemName);
+                    break;
+                case 'allocate':
+                    // Validate input value
+                    if (!itemNameInput.value) {
+                        alert('Please enter the item name');
+                        return;
+                    }
+    
+                    alert(`Item ${itemNameInput.value} added to FinalMenu!`);
+                    performActionOnItem('addToMenu', itemNameInput.value);
+                    break;
+                default:
+                    break;
+            }
+        }
+    
+        function performActionOnItem(action, itemName) {
+            // Make AJAX request to server to perform the action
+            fetch('/performActionOnItem', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    action: action,
+                    itemName: itemName,
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                // You can add more logic here if needed
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error performing action');
+            });
+        }
+    </script>
+</body>
+</html>

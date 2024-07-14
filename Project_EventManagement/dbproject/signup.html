@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign-Up</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('/image.jpg');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        
+        .container {
+            width: 300px;
+            background-color: rgba(85, 85, 85, 0.6);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .login-button {
+            background-color: #1fba00;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Sign-Up</h2>
+        <button type="button" onclick="RedirecttoSignupTeachers()">Sign-up For Teachers</button>
+        <button type="button" onclick="RedirecttoSignupstudents()">Sign-up For Students</button>
+        <button type="button" onclick="backToMain()">Back To Main Page</button>
+    </div>
+
+    <script src="index.js"></script>
+    <script>
+        function backToMain() {
+            window.location.href = '/';
+        }
+        function RedirecttoSignupstudents() {
+            window.location.href = '/studentssignup';
+        }
+        function RedirecttoSignupTeachers() {
+            window.location.href = '/teacherssignup';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,183 @@
+<!-- budgetadjustment.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget Adjustment</title>
+    <style>
+        body {
+            background-image: url('/image.jpg');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .adjustment-form {
+            padding: 20px;
+            background-color: #33333376;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            width: 300px; /* Adjust the width as needed */
+        }
+
+        label, select, input, button {
+            display: block;
+            margin-bottom: 10px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            width: auto;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .expense-list {
+            margin-top: 20px;
+            /* Add any additional styles for the expense list here */
+        }
+
+        .expense-item {
+            margin-bottom: 10px;
+            /* Add any additional styles for the expense items here */
+        }
+        button {
+            margin-top: 20px; /* Adjust as needed */
+            margin-bottom: 0; /* Remove the default margin-bottom */
+            padding: 10px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            width: auto; /* Adjust the width as needed */
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 auto; /* Center the button horizontally */
+        }
+        button.back-button {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Budget Adjustment</h1>
+
+    <div class="adjustment-form" id="adjustmentForm">
+        <label for="adjustmentCategory">Adjustment Category:</label>
+        <select id="adjustmentCategory" name="adjustmentCategory" required></select>
+
+        <label for="adjustmentAmount">Adjustment Amount:</label>
+        <input type="text" id="adjustmentAmount" name="adjustmentAmount" required>
+
+        <button type="button" onclick="makeBudgetAdjustment()">Make Adjustment</button>
+    </div>
+
+    <div class="expense-list" id="expenseList">
+        <!-- The expense list will be dynamically populated here -->
+    </div>
+
+    <button type="button" onclick="backToTeamFinance()">Back To Team Finance</button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Load the budget categories when the page is loaded
+            loadBudgetCategories();
+            
+            // Load the expense list when the page is loaded
+            loadExpenseList();
+        });
+
+        // Function to load budget categories into the dropdown
+        function loadBudgetCategories() {
+            fetch('/getbudgetcategories')
+                .then(response => response.json())
+                .then(data => {
+                    const adjustmentCategorySelect = document.getElementById('adjustmentCategory');
+
+                    // Clear existing options
+                    adjustmentCategorySelect.innerHTML = '';
+
+                    // Dynamically populate the dropdown options
+                    data.budgetCategories.forEach(category => {
+                        const option = document.createElement('option');
+                        option.value = category;
+                        option.textContent = category;
+                        adjustmentCategorySelect.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert("An error occurred while loading budget categories.");
+                });
+        }
+
+        function makeBudgetAdjustment() {
+            const adjustmentCategory = document.getElementById('adjustmentCategory').value;
+            const adjustmentAmount = document.getElementById('adjustmentAmount').value;
+
+            if (!adjustmentCategory || !adjustmentAmount) {
+                alert("Please enter both adjustment category and amount.");
+                return;
+            }
+
+            // Send a request to the server to make the budget adjustment
+            fetch(`/makebudgetadjustment?category=${adjustmentCategory}&amount=${adjustmentAmount}`)
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                    // Reload the expense list after making the adjustment
+                    loadExpenseList();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert("An error occurred. Please try again later.");
+                });
+        }
+
+        function loadExpenseList() {
+            // Send a request to the server to get the expense list data
+            fetch('/getexpenselist')
+                .then(response => response.json())
+                .then(data => {
+                    const expenseListContainer = document.getElementById('expenseList');
+
+                    // Clear existing content
+                    expenseListContainer.innerHTML = '';
+
+                    // Dynamically populate the expense list
+                    data.expenseList.forEach(item => {
+                        const expenseItem = document.createElement('div');
+                        expenseItem.classList.add('expense-item');
+                        expenseItem.textContent = `${item.category}: Rs ${item.amount}`;
+                        expenseListContainer.appendChild(expenseItem);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert("An error occurred while loading the expense list.");
+                });
+        }
+
+        function backToTeamFinance() {
+            window.location.href = '/financemain';
+        }
+    </script>
+</body>
+</html>

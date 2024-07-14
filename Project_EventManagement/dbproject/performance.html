@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance Volunteer</title>
+    <style>
+        body {
+            background-image: url('/image.jpg');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        form {
+            background-color: #33333376;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <form id="performanceForm">
+        <h2>Performance Volunteer</h2>
+        <label for="studentid">Student ID:</label>
+        <input type="text" id="studentid" name="studentid" required>
+
+        <label for="performanceType">Performance Type:</label>
+        <input type="text" id="performanceType" name="performanceType" required>
+
+        <label for="duration">Duration:</label>
+        <input type="text" id="duration" name="duration" required>
+
+        <label for="specialrequirements">Special Requirements:</label>
+        <input type="text" id="specialrequirements" name="specialrequirements" required>
+
+        <button type="button" onclick="submitPerformanceForm()">Submit</button>
+        <button type="button" onclick="backToMain()">Back To Main Page</button>
+    </form>
+
+    <script>
+        function backToMain() {
+            window.location.href = '/';
+        }
+
+        function submitPerformanceForm() {
+            const studentid = document.getElementById('studentid').value;
+            const performanceType = document.getElementById('performanceType').value;
+            const duration = document.getElementById('duration').value;
+            const specialrequirements = document.getElementById('specialrequirements').value;
+
+            // Perform validation if needed
+
+            // Send data to the server
+            fetch(`/insertPerformance?studentid=${studentid}&performanceType=${performanceType}&duration=${duration}&specialrequirements=${specialrequirements}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Redirect or perform any action upon successful performance input
+                        alert("Performance input successful!");
+                        // Redirect to the main page or perform other actions
+                    } else {
+                        // Handle unsuccessful performance input
+                        alert("Performance input failed. Please check your information.");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert("An error occurred. Please try again later.");
+                });
+        }
+    </script>
+
+</body>
+
+</html>

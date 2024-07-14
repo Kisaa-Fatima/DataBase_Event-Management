@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>
+        body {
+            background-image: url('/image.jpg');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        form {
+            background-color: #33333376;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <form id="operationsLoginForm">
+        <h2>Operations Team Login</h2>
+        <label for="operationsUsername">Username:</label>
+        <input type="text" id="operationsUsername" name="operationsUsername" required>
+
+        <label for="operationsPassword">Password:</label>
+        <input type="password" id="operationsPassword" name="operationsPassword" required>
+
+        <button type="submit">Login</button>
+        <button type="button" onclick="redirectToForgotPassword()">Forgot Password ?</button>
+        <button type="button" onclick="backToTeamOptions()">Back To Team Options</button>
+    </form>
+
+    <script>
+        document.getElementById('operationsLoginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            submitOperationsLoginForm();
+        });
+
+        function backToTeamOptions() {
+            window.location.href = '/teamoptions';
+        }
+
+        function submitOperationsLoginForm() {
+            const operationsUsername = document.getElementById('operationsUsername').value;
+            const operationsPassword = document.getElementById('operationsPassword').value;
+
+            if (!operationsUsername || !operationsPassword) {
+                alert("Please enter both username and password.");
+                return;
+            }
+
+            // Make a fetch request to your server with the operations' credentials
+            fetch(`/authentication/login?username=${operationsUsername}&password=${operationsPassword}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("Login successful!");
+                        redirectToTeamMain();
+                    } else {
+                        alert("Login failed. Invalid username or password.");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert("An error occurred. Please try again later.");
+                });
+        }
+
+        function redirectToTeamMain() {
+            window.location.href = '/operationmain';
+        }
+
+        function redirectToForgotPassword() {
+            window.location.href = '/forgotPassword';
+        }
+    </script>
+</body>
+</html>

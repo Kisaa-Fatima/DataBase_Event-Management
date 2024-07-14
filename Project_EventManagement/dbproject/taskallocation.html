@@ -1,0 +1,110 @@
+<!-- taskallocation.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Allocation</title>
+    <style>
+        body {
+            background-image: url('/image.jpg');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        form {
+            background-color: #33333376;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        select, input, button {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <form id="taskAllocationForm">
+        <h1>Task Allocation</h1>
+
+        <!-- Team selection dropdown -->
+        <label for="teamSelection">Select Team:</label>
+        <select id="teamSelection" name="teamSelection">
+            <option value="teamfinance">Team Finance</option>
+            <option value="teamcreatives">Team Creatives</option>
+            <option value="teamoperations">Team Operations</option>
+            <!-- Add more options as needed -->
+        </select>
+
+        <!-- New input for task description -->
+        <label for="taskInput">Task Description:</label>
+        <input type="text" id="taskInput" name="taskInput" required>
+
+        <!-- Submit button -->
+        <button type="button" onclick="assignTask()">Assign Task</button>
+
+        <button type="button" onclick="backToPresidentMain()">Back to President Main Page</button>
+    </form>
+
+    <script>
+        function backToPresidentMain() {
+            window.location.href = '/presidentmain';
+        }
+
+        // Function to handle task assignment
+        function assignTask() {
+            // Get selected team and task input values
+            const selectedTeam = document.getElementById('teamSelection').value;
+            const taskDescription = document.getElementById('taskInput').value;
+
+            // Perform any necessary validation or processing
+
+            // Example: Display an alert with the selected team and task
+            alert('Task assigned to ${selectedTeam}: ${taskDescription}');
+
+            fetch('/assignTask', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ team: selectedTeam, task: taskDescription }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Handle the response from the server, if needed
+                console.log('Server response:', data);
+                alert('Task assigned successfully!');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error assigning task. Please try again.');
+            });
+        }
+    </script>
+</body>
+</html>

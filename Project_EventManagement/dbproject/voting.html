@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance and Dinner Menu Voting</title>
+    <style>
+        body {
+            background-image: url('/image.jpg');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .list-container {
+            margin: 20px;
+            text-align: center;
+        }
+
+        .list {
+            background-color: #33333376;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            padding: 20px;
+            display: inline-block;
+            margin: 10px;
+        }
+
+        .vote-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #3498db;
+            border: none;
+            color: white;
+            border-radius: 5px;
+        }
+
+        .performance-option {
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="list-container">
+        <!-- Performance list section -->
+        <div class="list" id="performanceList">
+            <h2>Performance List</h2>
+        </div>
+
+        <!-- Dinner menu list section -->
+        <div class="list" id="dinnerMenuList">
+            <h2>Dinner Menu List</h2>
+        </div>
+
+        <!-- Vote buttons -->
+        <button class="vote-button" onclick="voteForPerformance()">Vote for Performance</button>
+        <button class="vote-button" onclick="voteForMenu()">Vote for Dinner Menu</button>
+    </div>
+
+    <script>
+        // Function to fetch and populate performance list
+        function fetchAndPopulatePerformanceList() {
+            fetch('/getprogresstracking/performances')
+                .then(response => response.json())
+                .then(data => {
+                    const performanceListContainer = document.getElementById('performanceList');
+                    data.performances.forEach(performance => {
+                        const performanceElement = document.createElement('div');
+                        performanceElement.className = 'performance-option';
+
+                        const performanceRadio = document.createElement('input');
+                        performanceRadio.type = 'radio';
+                        performanceRadio.name = 'selectedPerformance';
+                        performanceRadio.value = performance.performanceid;
+
+                        const performanceLabel = document.createElement('label');
+                        performanceLabel.textContent = `Type: ${performance.tyype} | Duration: ${performance.duration} Mins`;
+
+                        performanceElement.appendChild(performanceRadio);
+                        performanceElement.appendChild(performanceLabel);
+                        performanceListContainer.appendChild(performanceElement);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+        // Function to fetch and populate dinner menu list
+        function fetchAndPopulateMenuList() {
+            fetch('/getprogresstracking/menu')
+                .then(response => response.json())
+                .then(data => {
+                    const dinnerMenuListContainer = document.getElementById('dinnerMenuList');
+                    data.performances.forEach(item => {
+                        const itemNameElement = document.createElement('div');
+                        itemNameElement.className = 'performance-option';
+
+                        const itemNameRadio = document.createElement('input');
+                        itemNameRadio.type = 'radio';
+                        itemNameRadio.name = 'selectedOption';
+                        itemNameRadio.value = item.itemname;
+
+                        const itemNameLabel = document.createElement('label');
+                        itemNameLabel.textContent = item.itemname;
+
+                        itemNameElement.appendChild(itemNameRadio);
+                        itemNameElement.appendChild(itemNameLabel);
+                        dinnerMenuListContainer.appendChild(itemNameElement);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+        // Function to handle voting for performance
+       // Function to handle voting for performance
+function voteForPerformance() {
+    const selectedPerformance = document.querySelector('input[name="selectedPerformance"]:checked');
+
+    if (!selectedPerformance) {
+        alert('Please select a performance before voting.');
+        return;
+    }
+
+    const performanceId = selectedPerformance.value;
+    const performanceType = getPerformanceType(performanceId);
+
+    // Send a POST request to submit the vote
+    sendVote('/submitPerformanceVote', { performanceId, performanceType });
+}
+
+// Function to get the performance type based on the performance ID
+function getPerformanceType(performanceId) {
+    const performanceListContainer = document.getElementById('performanceList');
+    const performanceOptions = performanceListContainer.querySelectorAll('input[name="selectedPerformance"]');
+    
+    for (const option of performanceOptions) {
+        if (option.value === performanceId) {
+            const label = option.parentElement.querySelector('label');
+            return label.textContent.split(':')[1].trim(); // Assuming the label format is "Type: {performanceType} | Duration: {duration} Mins"
+        }
+    }
+
+    return null;
+}
+
+        // Function to handle voting for dinner menu
+        function voteForMenu() {
+            const selectedDinnerItem = selectMenuItem();
+
+            if (!selectedDinnerItem) {
+                alert('Please select a dinner menu item before voting.');
+                return;
+            }
+
+            // Send a POST request to submit the vote
+            sendVote('/submitMenuVote', { selectedDinnerItem });
+        }
+
+        // Function to select dinner menu item
+        function selectMenuItem() {
+            const selectedDinnerItem = document.querySelector('input[name="selectedOption"]:checked');
+            return selectedDinnerItem ? selectedDinnerItem.value : null;
+        }
+
+        // Function to send a vote via POST request
+        function sendVote(endpoint, data) {
+            fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+                .then(response => response.json())
+                .then(responseData => {
+                    if (responseData.success) {
+                        alert('Vote submitted successfully!');
+                    } else {
+                        alert('Failed to submit vote. Please try again.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while submitting your vote. Please try again.');
+                });
+        }
+
+        // Fetch and populate performance list and dinner menu list on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchAndPopulatePerformanceList();
+            fetchAndPopulateMenuList();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>
+        body {
+            background-image: url('/image.jpg'); /* Replace 'path/to/your/image.jpg' with the actual path to your image */
+            background-size: cover;
+            background-position: center;
+
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        form {
+            background-color: #33333376;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 10px; /* Added margin to separate buttons */
+        }
+        #announcementSection {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #33333376;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <form id="loginForm">
+        <h2>Welcome </h2>
+
+        <!-- New buttons for Progress Tracking and Task Allocation -->
+        <h1>Team Finance</h1>
+
+        <div class="button-container">
+            <button type="button" onclick="redirectToBudgetOverview()">Budget Overview</button>
+            <button type="button" onclick="redirectToExpenseTracking()">Expense Tracking</button>
+            <button type="button" onclick="redirectToBudgetAdjustment()">Budget Adjustment</button>
+        </div>
+    
+        <button type="button" onclick="backToMain()">Back To Main Page</button>
+        <div id="announcementSection">
+            <h3>Announcements</h3>
+            <ul id="announcementList"></ul>
+        </div>
+        <script>
+            function backToMain() {
+                window.location.href = '/';
+            }
+    
+            function redirectToBudgetOverview() {
+                window.location.href = '/budgetoverview';
+            }
+    
+            function redirectToExpenseTracking() {
+                window.location.href = '/expensetracking';
+            }
+    
+            function redirectToBudgetAdjustment() {
+                window.location.href = '/budgetadjustment';
+            }
+
+            function fetchAnnouncements() {
+            fetch('/getannouncements/teamfinance')
+                .then(response => response.json())
+                .then(data => {
+                    const announcementList = document.getElementById('announcementList');
+                    announcementList.innerHTML = ''; // Clear previous announcements
+
+                    if (data.success && data.announcements.length > 0) {
+                        data.announcements.forEach(announcement => {
+                            const listItem = document.createElement('li');
+                            listItem.textContent = announcement.message;
+                            announcementList.appendChild(listItem);
+                        });
+                    } else {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = 'No announcements available.';
+                        announcementList.appendChild(listItem);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+        // Call the fetchAnnouncements function when the page loads
+        window.onload = fetchAnnouncements;
+    
+           
+        </script>
+    
+    
+</body>
+</html>

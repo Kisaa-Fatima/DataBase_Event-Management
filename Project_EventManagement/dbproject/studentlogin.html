@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>
+        body {
+            background-image: url('/image.jpg'); /* Replace 'path/to/your/image.jpg' with the actual path to your image */
+            background-size: cover;
+            background-position: center;
+
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        form {
+            background-color: #33333376;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 10px; /* Added margin to separate buttons */
+        }
+    </style>
+</head>
+<body>
+    <form id="loginForm">
+        <h2>Login</h2>
+        <label for="username">Student ID:</label>
+        <input type="text" id="username" name="username" required placeholder="e.g i22-1111">
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+
+        <button type="button" onclick="submitLoginForm()">Login</button>
+        <button type="button" onclick="redirectToForgotPassword()">Forgot Password ?</button>
+        <button type="button" onclick="backToMain()">Back To Main Page</button>
+
+    </form>
+
+    <script>
+        function backToMain() {
+            window.location.href = '/';
+        }
+    
+        function submitLoginForm() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+    
+            // Student ID format validation
+            const studentIdPattern = /^i\d{2}-\d{4}$/;
+            if (!studentIdPattern.test(username)) {
+                alert("Student ID should be in the format ixx-xxxx, where 'x' is a digit.");
+                return; // Stop the function if validation fails
+            }
+    
+            
+    
+            fetch(`/authentication/studentslogin?username=${username}&password=${password}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Redirect or perform any action upon successful login
+                        alert("Login successful!");
+                        redirectTostudentmain();
+                    } else {
+                        // Handle unsuccessful login
+                        alert("Login failed. Invalid username or password.");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert("An error occurred. Please try again later.");
+                });
+        }
+    
+        function redirectToForgotPassword() {
+            // Redirect to the forgot password page
+            window.location.href = '/forgotPassword';
+        }
+    
+        function redirectTostudentmain() {
+            // Redirect to the forgot password page
+            window.location.href = '/studentmain';
+        }
+    </script>
+    
+</body>
+</html>

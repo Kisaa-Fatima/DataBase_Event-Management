@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>
+        body {
+            background-image: url('/image.jpg');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        form {
+            background-color: #33333376;
+            padding: 10px; /* Reduced padding */
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        #attendanceBox {
+            background-color: #33333376;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            margin-top: 20px; /* Added margin to increase the gap */
+            margin-left: 50px; /* Added margin to move the box to the left */
+        }
+
+        #errorMessage {
+            color: rgb(219, 219, 219);
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <form id="loginForm">
+        <h2>Welcome </h2>
+
+        <button type="button" onclick="redirectToMenuPage()">Menu Suggestions</button>
+        <button type="button" onclick="redirectToDietaryprefrencesPage()">Dietary Preferences</button>
+        <button type="button" onclick="redirectToPerformance()">Performance Volunteer</button>
+
+        <button type="button" onclick="backToMain()">Back To Main Page</button>
+
+    </form>
+
+    <div id="attendanceBox">
+        <label>Are you coming?</label>
+        <!-- Add a text box for entering student ID -->
+        <label for="studentId">Enter Student ID:</label>
+        <input type="text" id="studentId" name="studentId" placeholder="Student ID">
+
+        <!-- Call the redirectToWelcomeWithAttendance function with 'yes' parameter -->
+        <button type="button" onclick="redirectToWelcomeWithAttendance('yes')">Coming</button>
+        <button type="button" onclick="redirectToWelcomeWithAttendance('no')">Not Coming</button>
+
+        <!-- Display error message -->
+        <div id="errorMessage"></div>
+    </div>
+
+    <script>
+        function backToMain() {
+            window.location.href = '/';
+        }
+
+        function redirectToMenuPage() {
+            window.location.href = '/menu';
+        }
+
+        function redirectToPerformance() {
+            window.location.href = '/performance';
+        }
+
+        function redirectToDietaryprefrencesPage() {
+            window.location.href = '/DietaryPreferences';
+        }
+
+        function redirectToWelcomeWithAttendance(attendance) {
+            // Retrieve the student ID from the input field
+            var studentId = document.getElementById('studentId').value;
+
+            if (attendance === 'no') {
+                // Display error message for 'Not Coming'
+                document.getElementById('errorMessage').innerText = "Why are you not coming ꃋᴖꃋ";
+                return; // Stop further execution
+            }
+
+            // Clear error message for 'Coming'
+            document.getElementById('errorMessage').innerText = "";
+
+            // Create a JSON object with student ID and attendance status
+            var data = {
+                studentId: studentId,
+                attendance: attendance
+            };
+
+            // Send a POST request to the server
+            fetch('/submitAttendance', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                // Handle success if needed
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                // Handle error if needed
+            });
+        }
+    </script>
+</body>
+
+</html>

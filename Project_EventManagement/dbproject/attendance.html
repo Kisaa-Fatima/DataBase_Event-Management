@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Display</title>
+    <style>
+        body {
+            background-image: url('/image.jpg');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            height: 90vh;
+            margin: 0;
+            padding: 10px;
+        }
+
+        .container {
+            background-color: rgba(51, 51, 51, 0.6);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            padding: 20px;
+            width: 70%;
+            max-width: 600px;
+            margin: 50px;
+            margin-bottom: 10px;
+        }
+
+        .go-back-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #3498db;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            margin-top: 20px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .counter-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: auto;
+            margin-top: 20px;
+        }
+
+        .counter {
+            font-size: 24px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .counter-label {
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="attendanceContainer">
+        <!-- Attendance data will be displayed here -->
+    </div>
+
+    <div class="counter-container">
+        <span class="counter" id="attendanceCounter">0</span>
+        <span class="counter-label">Total People Attending</span>
+    </div>
+
+    <button class="go-back-button" onclick="goBack()">Go Back to Main</button>
+
+    <script>
+        // Function to go back to the main page
+        function goBack() {
+            // You can modify this URL to match the main page URL
+            window.location.href = '/';
+        }
+
+        // Fetch and display attendance data (assuming you have an endpoint)
+        function fetchAndDisplayAttendance() {
+            fetch('/getAttendanceData')
+                .then(response => response.json())
+                .then(data => {
+                    const attendanceContainer = document.getElementById('attendanceContainer');
+                    const attendanceCounter = document.getElementById('attendanceCounter');
+                    // Assuming the data is an array of attendance records
+                    data.attendanceData.forEach(attendanceRecord => {
+                        const recordElement = document.createElement('div');
+                        recordElement.textContent = `ID: ${attendanceRecord.ID} | Date: ${attendanceRecord.date} | Status: ${attendanceRecord.status}`;
+                        attendanceContainer.appendChild(recordElement);
+                    });
+
+                    // Update the attendance counter
+                    attendanceCounter.textContent = data.attendanceData.length;
+                })
+                .catch(error => {
+                    console.error('Error fetching attendance data:', error);
+                    // Handle the error as needed
+                });
+        }
+
+        // Fetch and display attendance data on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchAndDisplayAttendance();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!-- expensetracking.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracking</title>
+    <style>
+        body {
+            background-image: url('/image.jpg');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .expense-form {
+            padding: 20px;
+            background-color: #33333376;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Expense Tracking</h1>
+
+    <div class="expense-form" id="expenseForm">
+        <label for="expenseCategory">Expense Category:</label>
+        <input type="text" id="expenseCategory" name="expenseCategory" required>
+
+        <label for="expenseAmount">Expense Amount:</label>
+        <input type="text" id="expenseAmount" name="expenseAmount" required>
+
+        <button type="button" onclick="recordExpense()">Record Expense</button>
+    </div>
+
+    <button type="button" onclick="backToTeamFinance()">Back To Team Finance</button>
+
+    <script>
+        function recordExpense() {
+            const expenseCategory = document.getElementById('expenseCategory').value;
+            const expenseAmount = document.getElementById('expenseAmount').value;
+
+            if (!expenseCategory || !expenseAmount) {
+                alert("Please enter both expense category and amount.");
+                return;
+            }
+
+            // Send a request to the server to record the expense
+            fetch(`/recordexpense?category=${expenseCategory}&amount=${expenseAmount}`)
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert("An error occurred. Please try again later.");
+                });
+        }
+
+        function backToTeamFinance() {
+            window.location.href = '/financemain';
+        }
+    </script>
+</body>
+</html>

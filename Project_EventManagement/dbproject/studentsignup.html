@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Sign-Up</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('/image.jpg');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 98vh;
+        }
+        form {
+            width: 300px;
+            background-color: #55555500;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.308);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .login-button {
+            background-color: #1fba00;
+        }
+    </style>
+</head>
+<body>
+    <form id="userForm">
+        <h2>Student Sign-Up</h2>
+
+        <label for="studentid">Student ID:</label>
+        <input type="text" id="studentid" name="studentid" required placeholder="e.g. i20-1234">
+
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required placeholder="e.g i20-1234@nu.edu.pk">
+
+        <label for="phone">Phone:</label>
+        <input type="tel" id="phone" name="phone" required>
+
+        <label for="cnic">CNIC:</label>
+        <input type="text" id="cnic" name="cnic" required>
+
+        <label for="age">Age:</label>
+        <input type="number" id="age" name="age" required>
+
+        <button type="button" onclick="validateAndSubmit()">Submit</button>
+        <button type="button" onclick="backToMain()">Back To Sign-Up Page</button>
+    </form>
+
+    <script src="index.js"></script>
+    <script>
+        function validateAndSubmit() {
+            const studentid = document.getElementById('studentid').value;
+            const name = document.getElementById('name').value;
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const cnic = document.getElementById('cnic').value;
+            const age = document.getElementById('age').value;
+
+            // Validation checks
+            if (!validateStudentId(studentid)) {
+                alert("Invalid student ID format. It should be in the format ixx-xxxx.");
+                return;
+            }
+
+            if (!validateEmail(email)) {
+                alert("Invalid email format. It should be in the format ixxxxx@nu.edu.pk.");
+                return;
+            }
+
+            console.log("Sending data to server:", { studentid, name, username, password, email, phone, cnic, age });
+
+            fetch(`/insertStudentDetails?studentid=${studentid}&name=${name}&username=${username}&password=${password}&email=${email}&phone=${phone}&cnic=${cnic}&age=${age}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Server response:", data);
+                    if (data.success) {
+                        alert("Signup successful!");
+                        // Redirect or perform other actions on successful signup
+                    } else {
+                        alert("Signup failed. Please check your information.");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert("An error occurred. Please try again later.");
+                });
+        }
+
+        function validateStudentId(studentid) {
+            // Student ID format: ixx-xxxx
+            const regex = /^[iI]\d{2}-\d{4}$/;
+            return regex.test(studentid);
+        }
+
+        function validateEmail(email) {
+            // Email format: ixxxxx@nu.edu.pk
+            const regex = /^[iI]\d{6}@nu\.edu\.pk$/;
+            return regex.test(email);
+        }
+
+            console.log("Sending data to server:", { studentid, name, username, password, email, phone, cnic, age });
+
+            fetch(`/insertStudentDetails?studentid=${studentid}&name=${name}&username=${username}&password=${password}&email=${email}&phone=${phone}&cnic=${cnic}&age=${age}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Server response:", data);
+                    if (data.success) {
+                        alert("Signup successful!");
+                        // Redirect or perform other actions on successful signup
+                    } else {
+                        alert("Signup failed. Please check your information.");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert("An error occurred. Please try again later.");
+                });
+        
+
+        function backToMain() {
+            window.location.href = '/signup';
+        }
+    </script>
+</body>
+</html>

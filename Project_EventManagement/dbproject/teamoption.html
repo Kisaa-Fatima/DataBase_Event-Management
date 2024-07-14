@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>
+        body {
+            background-image: url('/image.jpg');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        form {
+            background-color: #33333376;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            text-decoration: none;
+            color: #fff;
+            background-color: #3498db;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #2980b9;}
+    </style>
+</head>
+<body>
+    <h1>Team Login Options</h1>
+    <button type="button" onclick="redirectToTeamLogin()"class="btn">President</button>
+    <button type="button" onclick="redirectToTeamLogin1()"class="btn">Team Creatives</button>
+    <button type="button" onclick="redirectToTeamLogin2()"class="btn">Team Operations</button>
+    <button type="button" onclick="redirectToTeamLogin3()"class="btn">Team Finance</button>
+
+<script>
+    function redirectToTeamLogin(team) {
+        window.location.href = '/teamoptions/president';
+    }
+    function redirectToTeamLogin1(team) {
+        window.location.href = '/teamoptions/teamcreatives';
+    }
+
+    function redirectToTeamLogin2(team) {
+        window.location.href = '/teamoptions/teamoperations';
+    }
+
+    function redirectToTeamLogin3(team) {
+        window.location.href = '/teamoptions/teamfinance';
+    }
+        function redirectToTeamMain() {
+            window.location.href = '/teammain';
+        }
+        
+        function redirectToForgotPassword() {
+            window.location.href = '/forgotPassword';
+        }
+
+        </script>
+        
+</body>
+</html>

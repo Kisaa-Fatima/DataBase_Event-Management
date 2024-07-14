@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progress Tracking</title>
+    <style>
+        body {
+            background-image: url('/image.jpg');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column; /* Added for better layout */
+            height: 100vh;
+            margin: 0;
+        }
+
+        .performance-list {
+            padding: 20px;
+            background-color: #33333376;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 20%;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+   <!-- <h1>Progress Tracking</h1>-->
+
+    <!-- Performance list section -->
+    <div class="performance-list" id="performanceList">
+        <h2>Performance List</h2>
+        <!-- Dynamically populate this section based on the actual performance data -->
+        <script>
+            // Fetch performance list from the server
+            fetch('/getprogresstracking/performances')  // Corrected endpoint
+                .then(response => response.json())
+                .then(data => {
+                    const performanceListContainer = document.getElementById('performanceList');
+                    data.performances.forEach(performance => {
+                        const performanceElement = document.createElement('p');
+                        performanceElement.textContent = `Performance ID: ${performance.performanceid}  | Duration: ${performance.duration} min's |  Type: ${performance.tyype}  |  Student ID: ${performance.studentuniid}  |  Special Requirements: ${performance.specialrequirements}`;
+                        performanceListContainer.appendChild(performanceElement);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        </script>
+    </div>
+
+    <button type="button" onclick="backToPresidentMain()">Back to Creative Main Page</button>
+
+    <script>
+        function backToPresidentMain() {
+            window.location.href = '/creativemain';
+        }
+    </script>
+</body>
+</html>

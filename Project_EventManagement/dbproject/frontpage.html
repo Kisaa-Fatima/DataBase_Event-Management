@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Website</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-image: url('/image.jpg');
+            background-size: cover;
+            background-position: center;
+            font-family: Arial, sans-serif;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 1.5em;
+            margin-bottom: 40px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            text-decoration: none;
+            color: #fff;
+            background-color: #3498db;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #2980b9;
+        }
+
+        /* Style for the announcement box */
+        #announcement-box {
+            display: none;
+            background-color: #b1844a41;
+            color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+        }
+
+        #announcement-heading {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        #announcement-message {
+            font-size: 1.5em;
+        }
+
+        /* Style for the "Vote For Menu and Performance" button */
+        .btn-vote {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            text-decoration: none;
+            color: #fff;
+            background-color: #3498db;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1001;
+        }
+
+        .btn-vote:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="content">
+        <h1>Student Welcome</h1>
+        <button type="button" onclick="redirectToSignup()" class="btn">Signup</button>
+        <button type="button" onclick="redirectToTeacherlogin()" class="btn">Teacher Login</button>
+        <button type="button" onclick="redirectToStudentlogin()" class="btn">Student Login</button>
+        <button type="button" onclick="redirectToTeamlogin()" class="btn">Team Member Login</button>
+
+        <!-- Announcement section -->
+        <div id="announcement-box">
+            <h2 id="announcement-heading">ANNOUNCEMENT!</h2>
+            <p id="announcement-message"> <!-- The announcement will be displayed here --> </p>
+        </div>
+
+        <!-- "Vote For Menu and Performance" button -->
+        <button type="button" onclick="redirectToVoting()" class="btn btn-vote">Vote For Menu and Performance</button>
+    </div>
+
+    <script src="index.js"></script>
+    <script>
+        // Fetch and display the announcement
+        document.addEventListener('DOMContentLoaded', function () {
+            fetch('/getAnnouncement')
+                .then(response => response.json())
+                .then(data => {
+                    const announcementBox = document.getElementById('announcement-box');
+                    const announcementHeading = document.getElementById('announcement-heading');
+                    const announcementMessage = document.getElementById('announcement-message');
+
+                    if (data.message) {
+                        announcementHeading.innerText = 'ANNOUNCEMENT!';
+                        announcementMessage.innerText = data.message;
+
+                        // Show the announcement box
+                        announcementBox.style.display = 'block';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+
+        function redirectToSignup() {
+            // Redirect to the signup page
+            window.location.href = '/signup';
+        }
+
+        function redirectToTeacherlogin() {
+            // Redirect to the teacher login page
+            window.location.href = '/Teacherlogin';
+        }
+
+        function redirectToStudentlogin() {
+            // Redirect to the student login page
+            window.location.href = '/studentlogin';
+        }
+
+        function redirectToTeamlogin() {
+            // Redirect to the student login page
+            window.location.href = '/teamoptions';
+        }
+        function redirectToVoting() {
+            // Redirect to the student login page
+            window.location.href = '/voting';
+        }
+    </script>
+</body>
+
+</html>

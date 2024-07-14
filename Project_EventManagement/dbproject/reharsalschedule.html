@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance Rescheduling</title>
+    <style>
+        body {
+            background-image: url('/image.jpg');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .left-container {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .right-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .performance-list {
+            background-color: #33333376;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            margin-top: 20px;
+            padding: 20px;
+        }
+
+        .action-box {
+            width: 300px;
+            border: 2px solid #33333376;
+            background-color: #33333376;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .action-box:hover {
+            transform: scale(1.1);
+        }
+
+        .action-button {
+            margin-top: 10px;
+            padding: 8px 12px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #3498db;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .action-button:hover {
+            background-color: #2980b9;
+        }
+
+        .reschedule-input {
+            width: calc(100% - 16px);
+            margin: 8px 0;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="left-container">
+        <!-- Performance list section -->
+        <div class="performance-list" id="performanceList">
+            <h2>Performance List</h2>
+            
+            <script>
+                // Fetch performance list from the server
+                fetch('/getprogresstracking/performances')
+                    .then(response => response.json())
+                    .then(data => {
+                        const performanceListContainer = document.getElementById('performanceList');
+                        data.performances.forEach(performance => {
+                            const performanceElement = document.createElement('div');
+                            performanceElement.className = 'performance-option';
+
+                            const performanceRadio = document.createElement('input');
+                            performanceRadio.type = 'radio';
+                            performanceRadio.name = 'selectedPerformance';
+                            performanceRadio.value = performance.performanceid;
+
+                            const performanceLabel = document.createElement('label');
+                            performanceLabel.textContent = `ID: ${performance.performanceid} | Duration: ${performance.duration} min's | Type: ${performance.tyype} | Student ID: ${performance.studentuniid} | Special Requirements: ${performance.specialrequirements}`;
+
+                            performanceElement.appendChild(performanceRadio);
+                            performanceElement.appendChild(performanceLabel);
+                            performanceListContainer.appendChild(performanceElement);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            </script>
+        </div>
+    </div>
+
+    <div class="right-container">
+        <!-- Container for Reschedule Box -->
+        <div class="action-box" id="rescheduleBox">
+            <h3>Reschedule Performance</h3>
+
+            <!-- Time Slot Input -->
+            <label for="rescheduleTime">New Time Slot:</label>
+            <input type="text" id="rescheduleTime" class="reschedule-input" placeholder="Enter new time slot">
+
+            <!-- Date Input -->
+            <label for="rescheduleDate">New Date:</label>
+            <input type="date" id="rescheduleDate" class="reschedule-input">
+
+            <button class="action-button" onclick="performReschedule()">Reschedule</button>
+        </div>
+    </div>
+
+    <script>
+        function performReschedule() {
+            const selectedPerformance = document.querySelector('input[name="selectedPerformance"]:checked');
+    
+            if (!selectedPerformance) {
+                alert('Please select a performance');
+                return;
+            }
+    
+            const performanceId = selectedPerformance.value;
+    
+            // Retrieve values from input boxes
+            const newTimeSlot = document.getElementById('rescheduleTime').value;
+            const newDate = document.getElementById('rescheduleDate').value;
+    
+            // Validate input values
+            if (!newTimeSlot || !newDate) {
+                alert('Please enter both new time slot and date');
+                return;
+            }
+    
+            // Make AJAX request to server to perform the rescheduling action
+            fetch('/reschedulePerformance', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    performanceId: performanceId,
+                    newTimeSlot: newTimeSlot,
+                    newDate: newDate,
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                // You can add more logic here if needed
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error rescheduling performance');
+            });
+        }
+    </script>
+</body>
+</html>

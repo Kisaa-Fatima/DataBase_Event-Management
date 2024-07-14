@@ -1,0 +1,86 @@
+<!-- progresstracking.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progress Tracking</title>
+    <style>
+        body {
+            background-image: url('/image.jpg'); /* Replace 'path/to/your/image.jpg' with the actual path to your image */
+            background-size: cover;
+            background-position: center;
+
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .task-status {
+            padding: 20px;
+            background-color: #33333376;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Progress Tracking</h1>
+
+    <!-- Task status sections -->
+    <div class="task-status" id="completeStatus">
+        <h2>Complete Tasks</h2>
+        <!-- Dynamically populate this section based on the actual task status -->
+        <script>
+            // Fetch completed tasks from the server
+            fetch('/getprogresstracking/complete')
+                .then(response => response.json())
+                .then(data => {
+                    const completeTasksContainer = document.getElementById('completeStatus');
+                    data.tasks.forEach(task => {
+                        const taskElement = document.createElement('p');
+                        taskElement.textContent = `Task ID: ${task.taskid} - Task Description: ${task.desscription}`;                       
+                         completeTasksContainer.appendChild(taskElement);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        </script>
+    </div>
+
+    <div class="task-status" id="incompleteStatus">
+        <h2>Incomplete Tasks</h2>
+        <!-- Dynamically populate this section based on the actual task status -->
+        <script>
+            // Fetch incomplete tasks from the server
+            fetch('/getprogresstracking/incomplete')
+                .then(response => response.json())
+                .then(data => {
+                    const incompleteTasksContainer = document.getElementById('incompleteStatus');
+                    data.tasks.forEach(task => {
+                        const taskElement = document.createElement('p');
+                        taskElement.textContent = `Task ID: ${task.taskid} - Task Description: ${task.desscription}`;
+                        incompleteTasksContainer.appendChild(taskElement);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        </script>
+    </div>
+    <button type="button" onclick="backToPresidentMain()">Back to President Main Page</button>
+
+    <script>
+        function backToPresidentMain() {
+            window.location.href = '/presidentmain';
+        }
+    </script>
+</body>
+</html>

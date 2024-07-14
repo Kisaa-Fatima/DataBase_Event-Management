@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance Management</title>
+    <style>
+        body {
+            background-image: url('/image.jpg');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .left-container {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .right-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .performance-list {
+            background-color: #33333376;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            margin-top: 20px;
+            padding: 20px;
+        }
+
+        .action-box {
+            width: 250px;
+            height: 250px;
+            border: 2px solid #33333376;
+            background-color: #33333376;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-button {
+            margin-top: 10px;
+            padding: 8px 12px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #3498db;
+            border: none;
+            color: white;
+            border-radius: 5px;
+        }
+
+        .performance-option {
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="left-container">
+        <!-- Performance list section -->
+        <div class="performance-list" id="performanceList">
+            <h2>Performance List</h2>
+            
+            <script>
+                // Fetch performance list from the server
+                fetch('/getprogresstracking/performances')
+                    .then(response => response.json())
+                    .then(data => {
+                        const performanceListContainer = document.getElementById('performanceList');
+                        data.performances.forEach(performance => {
+                            const performanceElement = document.createElement('div');
+                            performanceElement.className = 'performance-option';
+
+                            const performanceRadio = document.createElement('input');
+                            performanceRadio.type = 'radio';
+                            performanceRadio.name = 'selectedPerformance';
+                            performanceRadio.value = performance.performanceid;
+
+                            const performanceLabel = document.createElement('label');
+                            performanceLabel.textContent = `ID: ${performance.performanceid} | Duration: ${performance.duration} | Votes: ${performance.votes} | Type: ${performance.tyype} | Student ID: ${performance.studentid} | Special Requirements: ${performance.specialrequirements}`;
+
+                            performanceElement.appendChild(performanceRadio);
+                            performanceElement.appendChild(performanceLabel);
+                            performanceListContainer.appendChild(performanceElement);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            </script>
+        </div>
+    </div>
+
+    <div class="right-container">
+        <!-- Container for Action Boxes -->
+        <!-- First Box: Accept Performance -->
+        <div class="action-box" id="acceptBox">
+            <h3>Accept Performance</h3>
+            <button class="action-button" onclick="performAction('accept')">Accept</button>
+        </div>
+
+        <!-- Second Box: Reject Performance -->
+        <div class="action-box" id="rejectBox">
+            <h3>Reject Performance</h3>
+            <button class="action-button" onclick="performAction('reject')">Reject</button>
+        </div>
+
+        <!-- Third Box: Allocate Time Slot and Venue -->
+        <div class="action-box" id="allocateBox">
+            <h3>Allocate Time Slot and Venue</h3>
+
+            <!-- Time Slot Input -->
+            <label for="timeSlot">Time Slot:</label>
+            <input type="text" id="timeSlot" placeholder="Enter time slot">
+
+            <!-- Venue Input -->
+            <label for="venue">Venue:</label>
+            <input type="text" id="venue" placeholder="Enter venue">
+
+            <button class="action-button" onclick="performAction('allocate')">Allocate</button>
+            
+        </div>
+    </div>
+
+    <script>
+        function performAction(action) {
+            const selectedPerformance = document.querySelector('input[name="selectedPerformance"]:checked');
+    
+            if (!selectedPerformance) {
+                alert('Please select a performance');
+                return;
+            }
+    
+            const performanceId = selectedPerformance.value;
+    
+            // Retrieve values from input boxes
+            const timeSlot = document.getElementById('timeSlot').value;
+            const venue = document.getElementById('venue').value;
+    
+            switch (action) {
+                case 'accept':
+                    alert(`Performance ID ${performanceId} accepted!`);
+                    performActionOnPerformance('Accepted', performanceId, timeSlot, venue);
+                    break;
+                case 'reject':
+                    alert(`Performance ID ${performanceId} rejected!`);
+                    performActionOnPerformance('Rejected', performanceId, timeSlot, venue);
+                    break;
+                case 'allocate':
+                    // Validate input values
+                    if (!timeSlot || !venue) {
+                        alert('Please enter both time slot and venue');
+                        return;
+                    }
+    
+                    alert(`Time: ${timeSlot}, Venue: ${venue} allocated for Performance ID ${performanceId}!`);
+                    performActionOnPerformance('Accepted', performanceId, timeSlot, venue);
+                    break;
+                default:
+                    break;
+            }
+        }
+    
+        function performActionOnPerformance(action, performanceId, timeSlot, venue) {
+            // Make AJAX request to server to perform the action
+            fetch('/performActionOnPerformance', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    action: action,
+                    performanceId: performanceId,
+                    allocatedTime: timeSlot,
+                    venueSlot: venue,
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                // You can add more logic here if needed
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error performing action');
+            });
+        }
+    </script>
+    
+</body>
+</html>

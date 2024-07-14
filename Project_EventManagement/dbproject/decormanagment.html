@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decoration Management</title>
+    <style>
+        body {
+            background-image: url('/image.jpg');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column; /* Added for better layout */
+            height: 50vh; /* Adjusted height to be 50% of the viewport height */
+            margin: 30vh 0 0;
+        }
+
+        .decoration-form {
+            padding: 20px;
+            background-color: #33333376;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 25%;
+            margin-top: 10px; /* Adjusted margin-top to move the button down */
+        }
+
+        .back-button {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="decoration-form" id="decorationForm">
+        <label for="teamID">Team ID:</label>
+        <input type="text" id="teamID" name="teamID" required>
+
+        <label for="decorationType">Decoration Type:</label>
+        <input type="text" id="decorationType" name="decorationType" required>
+
+        <label for="decorationPlace">Decoration Place:</label>
+        <input type="text" id="decorationPlace" name="decorationPlace" required>
+
+        <!-- Add any additional form elements as needed -->
+
+        <button type="button" onclick="submitDecoration()">Submit</button>
+    </div>
+
+    <button class="back-button" type="button" onclick="backToMainPage()">Back to Main Page</button>
+
+    <script>
+       function submitDecoration() {
+    const teamID = document.getElementById('teamID').value;
+    const decorationType = document.getElementById('decorationType').value;
+    const decorationPlace = document.getElementById('decorationPlace').value;
+
+    if (!teamID || !decorationType || !decorationPlace) {
+        alert("Please fill in all fields.");
+        return;
+    }
+
+    // Prepare the payload as an object
+    const payload = {
+        teamid: teamID,
+        decorationtype: decorationType,
+        decorationplace: decorationPlace
+    };
+
+    // Send a POST request to the server
+    fetch('/submitdecoration', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert(data.message);
+        // Optionally, you can redirect to another page or perform additional actions
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert("An error occurred. Please try again later.");
+    });
+}
+
+        function backToMainPage() {
+            window.location.href = '/mainpage'; // Replace with the actual URL for your main page
+        }
+    </script>
+</body>
+</html>
